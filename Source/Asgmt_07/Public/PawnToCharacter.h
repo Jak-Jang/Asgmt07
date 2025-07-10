@@ -31,6 +31,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components|Camera")
 	UCameraComponent* Camera;
 
+	FVector2D MoveInput;
+	FVector2D LookInput;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed|MoveSpeed")
+	float MoveSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed|MouseSensitivity")
+	float LookSpeed;
+
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -40,10 +48,6 @@ protected:
 	void StopMove(const FInputActionValue& value);
 	UFUNCTION()
 	void Look(const FInputActionValue& value);
-
-	FVector2D MoveInput;
-	FVector2D LookInput;
-
-	float MoveSpeed;
-	float LookSpeed;
+	UFUNCTION()
+	void StopLook(const FInputActionValue& value);
 };

@@ -39,17 +39,16 @@ void APawnToCharacter::Tick(float DeltaTime)
 
 	if (!MoveInput.IsNearlyZero())
 	{
-		FVector Forward = GetActorForwardVector();
-		FVector Right = GetActorRightVector();
-
-		FVector Movement = 
-			(Forward * MoveInput.X + Right * MoveInput.Y) * MoveSpeed * DeltaTime;
-		AddActorWorldOffset(Movement);
+		AddActorLocalOffset(
+			FVector(MoveInput.X * MoveSpeed * DeltaTime, MoveInput.Y * MoveSpeed * DeltaTime, 0.0f),
+			true);
 	}
 
 	if (!LookInput.IsNearlyZero())
 	{
 		AddActorLocalRotation(FRotator(0.0f, LookInput.X * LookSpeed * DeltaTime, 0.0f));
+
+		SpringArm->AddLocalRotation(FRotator(LookInput.Y * LookSpeed * DeltaTime, 0.0f, 0.0f));
 	}
 }
 
@@ -88,6 +87,15 @@ void APawnToCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 					this, 
 					&APawnToCharacter::Look);
 			}
+
+			if (PlayerController->LookAction)
+			{
+				EnhancedInput->BindAction(
+					PlayerController->LookAction,
+					ETriggerEvent::Completed,
+					this,
+					&APawnToCharacter::StopLook);
+			}
 		}
 	}
 }
@@ -106,4 +114,9 @@ void APawnToCharacter::Look(const FInputActionValue& value)
 {
 	if (!Controller) return;
 	LookInput = value.Get<FVector2D>();
+}
+void APawnToCharacter::StopLook(const FInputActionValue& value)
+{
+	if (!Controller) return;
+	LookInput = FVector2D::ZeroVector;
 }
