@@ -4,7 +4,9 @@
 /DerivedDataCache/
 /Intermediate/
 /Saved/
+
 *.vsconfig
+
 /Content/*
 !/Content/Blueprints/
 !/Content/Maps/
